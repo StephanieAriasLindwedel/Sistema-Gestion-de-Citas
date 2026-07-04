@@ -15,15 +15,15 @@ public class EspacioCitaService {
     @Autowired
     private EspacioCitaRepository espacioCitaRepository;
 
-    private List<EspacioCita> listarTodos() {
+    public List<EspacioCita> listarTodos() {
         return espacioCitaRepository.findAll();
     }
 
-    private List<EspacioCita> listarPorMedico(Long medicoId) {
+    public List<EspacioCita> listarPorMedico(Long medicoId) {
         return espacioCitaRepository.findByMedicoId(medicoId);
     }
 
-    private List<EspacioCita> listarDisponibles() {
+    public List<EspacioCita> listarDisponibles() {
         return espacioCitaRepository.findByOcupadoFalse();
     }
 
