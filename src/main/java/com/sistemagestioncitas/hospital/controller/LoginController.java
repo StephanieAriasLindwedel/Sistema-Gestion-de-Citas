@@ -25,8 +25,8 @@ public class LoginController {
         return "recuperar";
     }
 
-    @GetMapping("/")
-    public String inicio() {
-        return "redirect:/usuarios/perfil";
+    @GetMapping("/acceso-denegado")
+    public String accesoDenegado() {
+        return "acceso-denegado";
     }
 }

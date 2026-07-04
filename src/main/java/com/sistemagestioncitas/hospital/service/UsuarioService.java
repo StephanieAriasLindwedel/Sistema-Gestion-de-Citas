@@ -26,6 +26,10 @@ public class UsuarioService {
         return usuarioRepository.findById(id);
     }
 
+    public Optional<Usuario> buscarPorCorreo(String correo) {
+        return usuarioRepository.findByCorreo(correo);
+    }
+
     public Usuario guardar(Usuario usuario) {
         usuario.setpassword(passwordEncoder.encode(usuario.getpassword()));
         return usuarioRepository.save(usuario);
@@ -33,6 +37,11 @@ public class UsuarioService {
 
     public Usuario actualizar(Usuario usuario) {
         return usuarioRepository.save(usuario);
+    }
+
+    public void actualizarPassword(Usuario usuario, String newPass) {
+        usuario.setpassword(passwordEncoder.encode(newPass));
+        usuarioRepository.save(usuario);
     }
 
     public void desactivar(Long id) {
@@ -50,7 +59,4 @@ public class UsuarioService {
         return usuarioRepository.existsByCedula(cedula);
     }
 
-    public Optional<Usuario> buscarPorCorreo(String correo) {
-        return usuarioRepository.findByCorreo(correo);
-    }
 }
