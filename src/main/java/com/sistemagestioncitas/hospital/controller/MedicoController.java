@@ -31,35 +31,35 @@ public class MedicoController {
         return "medico/listaMedicos";
     }
 
-    //Formulario nuevo medico
+    //Formulario nuevo medico (ADMIN)
     @GetMapping("/nuevo")
     public String mostrarFormulario(Model model) {
         model.addAttribute("medico", new Medico());
         return "medico/formularioMedico";
     }
 
-    //Editar medico
+    //Editar medico (ADMIN)
     @GetMapping("/editar/{id}")
     public String editarMedico(@PathVariable Long id, Model model) {
         model.addAttribute("medico", medicoService.obtenerPorId(id).orElse(new Medico()));
         return "medico/formularioMedico";
     }
 
-    //Guardar Medico
+    //Guardar Medico (ADMIN)
     @PostMapping("/guardar")
     public String guardarMedico(@ModelAttribute Medico medico) {
         medicoService.guardar(medico);
         return "redirect:/medicos/";
     }
 
-    //Eliminar medico
+    //Eliminar medico (ADMIN)
     @GetMapping("/eliminar/{id}")
     public String eliminarMedico(@PathVariable Long id) {
         medicoService.eliminar(id);
         return "redirect:/medicos/";
     }
 
-    //Espacios medico
+    //Espacios medico (ADMIN Y USUARIOS)
     @GetMapping("/{id}/espacios")
     public String verEspacios(@PathVariable Long id, Model model) {
         model.addAttribute("medico", medicoService.obtenerPorId(id).orElse(null));
@@ -67,7 +67,7 @@ public class MedicoController {
         return "espacio/listaEspacios";
     }
 
-    //Nuevos Espacios
+    //Nuevos Espacios (ADMIN)
     @GetMapping("/espacio/nuevo/{medicoId}")
     public String nuevoEspacio(@PathVariable Long medicoId, Model model) {
         model.addAttribute("espacio", new EspacioCita());
@@ -75,7 +75,7 @@ public class MedicoController {
         return "espacio/formularioEspacio";
     }
 
-    //Guardar espacio
+    //Guardar espacio (ADMIN)
     @PostMapping("/espacio/guardar")
     public String guardarEspacio(@ModelAttribute EspacioCita espacio, @RequestParam Long medicoId) {
         Medico medico = medicoService.obtenerPorId(medicoId)

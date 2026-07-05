@@ -13,8 +13,9 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-            Authentication authentication) throws IOException {
+    public void onAuthenticationSuccess(HttpServletRequest request, 
+                                        HttpServletResponse response,
+                                        Authentication authentication) throws IOException {
         boolean esAdmin = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .anyMatch(a -> a.equals("ROL_ADMIN"));
