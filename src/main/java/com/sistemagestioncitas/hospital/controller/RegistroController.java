@@ -2,6 +2,8 @@ package com.sistemagestioncitas.hospital.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -15,35 +17,50 @@ public class RegistroController {
     @Autowired
     private UsuarioService usuarioService;
 
+    @GetMapping("/registro")
+    public String mostrarRegistro(Model model) {
+        model.addAttribute("usuario", new Usuario());
+        return "registro";
+    }
+
     @PostMapping("/registrar")
-    public String registrarUsuario(@ModelAttribute Usuario usuario, RedirectAttributes redirectAttributes) {
-        //validar
-        if (usuario.getcorreo() == null || usuario.getcorreo().isEmpty()
-                || usuario.getcedula() == null || usuario.getcedula().isEmpty()
-                || usuario.getnombre() == null || usuario.getnombre().isEmpty()
-                || usuario.getpassword() == null || usuario.getpassword().isEmpty()) {
-            redirectAttributes.addFlashAttribute("Error", "Todos los campos son obligatorios");
+    public String registrarUsuario(@ModelAttribute Usuario usuario,
+            RedirectAttributes redirectAttributes) {
+
+        if (usuario.getCorreo() == null || usuario.getCorreo().isEmpty()
+                || usuario.getCedula() == null || usuario.getCedula().isEmpty()
+                || usuario.getNombre() == null || usuario.getNombre().isEmpty()
+                || usuario.getPassword() == null || usuario.getPassword().isEmpty()) {
+
+            redirectAttributes.addFlashAttribute("error", "Todos los campos son obligatorios");
             return "redirect:/registro";
         }
-        //Validaciones de formato
-        if (!usuario.getcorreo().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
-            redirectAttributes.addFlashAttribute("Error", "El correo electrónico no es válido");
+
+        if (!usuario.getCorreo().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            redirectAttributes.addFlashAttribute("error", "Correo inválido");
             return "redirect:/registro";
         }
-        //Validacion de unicos
-        if (usuarioService.existeCorreo(usuario.getcorreo())) {
-            redirectAttributes.addFlashAttribute("Error", "El correo ya está registrado");
+
+        if (usuarioService.existeCorreo(usuario.getCorreo())) {
+            redirectAttributes.addFlashAttribute("error", "Correo ya registrado");
             return "redirect:/registro";
         }
-        if (usuarioService.existeCedula(usuario.getcedula())) {
-            redirectAttributes.addFlashAttribute("Error", "La cédula ya está registrada");
+
+        if (usuarioService.existeCedula(usuario.getCedula())) {
+            redirectAttributes.addFlashAttribute("error", "Cédula ya registrada");
             return "redirect:/registro";
         }
-        //Asignacion rol por defecto
-        usuario.setrol("USUARIO");
-        usuario.setactivo(true);
-        usuarioService.guardar(usuario);
-        redirectAttributes.addFlashAttribute("Exito", "El registro fue exitoso, por favor inicie sesión");
-        return "redirect:/login";
+
+        usuario.setRol("USUARIO");
+        usuario.setActivo(true);
+
+        try {
+            usuarioService.guardar(usuario);
+            redirectAttributes.addFlashAttribute("exito", "Registro exitoso");
+            return "redirect:/login";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error: " + e.getMessage());
+            return "redirect:/registro";
+        }
     }
 }

@@ -3,12 +3,7 @@ package com.sistemagestioncitas.hospital.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.sistemagestioncitas.hospital.model.EspacioCita;
 import com.sistemagestioncitas.hospital.model.Medico;
@@ -16,72 +11,79 @@ import com.sistemagestioncitas.hospital.service.EspacioCitaService;
 import com.sistemagestioncitas.hospital.service.MedicoService;
 
 @Controller
-@RequestMapping("/medicos")
 public class MedicoController {
 
     @Autowired
     private MedicoService medicoService;
+
     @Autowired
     private EspacioCitaService espacioCitaService;
 
-    //Listar médicos
-    @GetMapping("/")
+    @GetMapping("/medico")
     public String listarMedicos(Model model) {
         model.addAttribute("medicos", medicoService.listarTodos());
         return "medico/listaMedicos";
     }
 
-    //Formulario nuevo medico (ADMIN)
-    @GetMapping("/nuevo")
+    @GetMapping("/medico/nuevo")
     public String mostrarFormulario(Model model) {
         model.addAttribute("medico", new Medico());
         return "medico/formularioMedico";
     }
 
-    //Editar medico (ADMIN)
-    @GetMapping("/editar/{id}")
+    @GetMapping("/medico/editar/{id}")
     public String editarMedico(@PathVariable Long id, Model model) {
-        model.addAttribute("medico", medicoService.obtenerPorId(id).orElse(new Medico()));
-        return "medico/formularioMedico";
+
+        return medicoService.obtenerPorId(id)
+                .map(m -> {
+                    model.addAttribute("medico", m);
+                    return "medico/formularioMedico";
+                })
+                .orElse("redirect:/medico");
     }
 
-    //Guardar Medico (ADMIN)
-    @PostMapping("/guardar")
+    @PostMapping("/medico/guardar")
     public String guardarMedico(@ModelAttribute Medico medico) {
         medicoService.guardar(medico);
-        return "redirect:/medicos/";
+        return "redirect:/medico";
     }
 
-    //Eliminar medico (ADMIN)
-    @GetMapping("/eliminar/{id}")
+    @GetMapping("/medico/eliminar/{id}")
     public String eliminarMedico(@PathVariable Long id) {
         medicoService.eliminar(id);
-        return "redirect:/medicos/";
+        return "redirect:/medico";
     }
 
-    //Espacios medico (ADMIN Y USUARIOS)
-    @GetMapping("/{id}/espacios")
+    // FIX NULL SAFE
+    @GetMapping("/medico/{id}/espacios")
     public String verEspacios(@PathVariable Long id, Model model) {
-        model.addAttribute("medico", medicoService.obtenerPorId(id).orElse(null));
+
+        Medico medico = medicoService.obtenerPorId(id)
+                .orElseThrow(() -> new RuntimeException("Médico no encontrado"));
+
+        model.addAttribute("medico", medico);
         model.addAttribute("espacios", espacioCitaService.listarPorMedico(id));
-        return "espacio/listaEspacios";
+
+        return "medico/listaEspacios";
     }
 
-    //Nuevos Espacios (ADMIN)
-    @GetMapping("/espacio/nuevo/{medicoId}")
+    @GetMapping("/medico/espacio/nuevo/{medicoId}")
     public String nuevoEspacio(@PathVariable Long medicoId, Model model) {
         model.addAttribute("espacio", new EspacioCita());
         model.addAttribute("medicoId", medicoId);
-        return "espacio/formularioEspacio";
+        return "medico/formularioEspacio";
     }
 
-    //Guardar espacio (ADMIN)
-    @PostMapping("/espacio/guardar")
-    public String guardarEspacio(@ModelAttribute EspacioCita espacio, @RequestParam Long medicoId) {
+    @PostMapping("/medico/espacio/guardar")
+    public String guardarEspacio(@ModelAttribute EspacioCita espacio,
+            @RequestParam Long medicoId) {
+
         Medico medico = medicoService.obtenerPorId(medicoId)
-                .orElseThrow(() -> new RuntimeException("MEDICO NO ENCONTRADO"));
-        espacio.setmedico(medico);
+                .orElseThrow(() -> new RuntimeException("Médico no encontrado"));
+
+        espacio.setMedico(medico);
         espacioCitaService.guardar(espacio);
-        return "redirect:/medicos/" + medicoId + "/espacios";
+
+        return "redirect:/medico/" + medicoId + "/espacios";
     }
 }

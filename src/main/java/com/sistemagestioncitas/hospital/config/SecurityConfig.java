@@ -29,25 +29,38 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                //Rutas publicas
-                .requestMatchers("/login", "/registro", "/registrar", "/recuperar",
-                        "/css/**", "js/**", "/h2-console/**").permitAll()
-                //Rutas de Admin y Usuario
-                .requestMatchers("/usuarios/perfil", "/usuarios/guardar", "/medicos/",
-                        "/medicos/{id}/espacios").hasAnyRole("USUARIO", "ADMIN")
-                //TODO LO DEMAS ES ADMIN
-                .anyRequest().hasRole("ADMIN")
-                )
+                        .requestMatchers("/login", "/registro", "/registrar", "/recuperar",
+                                "/css/**", "/js/**", "/h2-console/**")
+                        .permitAll()
+
+                        .requestMatchers("/usuario/perfil", "/usuario/guardar",
+                                "/medico", "/medico/{id}/espacios")
+                        .hasAnyRole("USUARIO", "ADMIN")
+
+                        .requestMatchers("/usuario/listaUsuarios",
+                                "/usuario/editar/**",
+                                "/usuario/desactivar/**",
+                                "/usuario/admin/**",
+                                "/medico/nuevo",
+                                "/medico/guardar",
+                                "/medico/editar/**",
+                                "/medico/eliminar/**",
+                                "/medico/espacio/**")
+                        .hasRole("ADMIN")
+                        .anyRequest().authenticated())
                 .formLogin(form -> form
-                .loginPage("/login")
-                .successHandler(loginSuccessHandler)
-                .permitAll())
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .successHandler(loginSuccessHandler)
+                        .failureUrl("/login?error=true")
+                        .permitAll())
                 .logout(logout -> logout
-                .logoutSuccessUrl("/login?logout")
-                .permitAll())
-                .exceptionHandling(ex -> ex.accessDeniedPage("/login?error=acceso"))
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll())
+                .exceptionHandling(ex -> ex.accessDeniedPage("/acceso-denegado"))
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));
+
         return http.build();
     }
 }

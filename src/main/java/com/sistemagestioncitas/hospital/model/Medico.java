@@ -20,41 +20,41 @@ public class Medico {
     private String nombre;
     private String especialidad;
     @OneToMany(mappedBy = "medico", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<EspacioCita> espacios;
+    private java.util.List<EspacioCita> espacios = new java.util.ArrayList<>();
 
-    public Medico() {
-    }
-
-    public Long getid() {
+    public Long getId() {
         return id;
     }
 
-    public void setid(Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getnombre() {
+    public String getNombre() {
         return nombre;
     }
 
-    public void setnombre(String nombre) {
+    public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
-    public String getespecialidad() {
+    public String getEspecialidad() {
         return especialidad;
     }
 
-    public void setespecialidad(String especialidad) {
+    public void setEspecialidad(String especialidad) {
         this.especialidad = especialidad;
     }
 
-    public List<EspacioCita> getespacios() {
+    public List<EspacioCita> getEspacios() {
         return espacios;
     }
 
-    public void setespacios(List<EspacioCita> espacios) {
+    public void setEspacios(List<EspacioCita> espacios) {
         this.espacios = espacios;
+    }
+
+    public Medico() {
     }
 
 }

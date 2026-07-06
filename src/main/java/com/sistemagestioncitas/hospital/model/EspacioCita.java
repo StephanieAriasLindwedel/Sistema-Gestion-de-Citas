@@ -26,51 +26,51 @@ public class EspacioCita {
     @JoinColumn(name = "medico_id")
     private Medico medico;
 
-    public Long getid() {
+    public Long getId() {
         return id;
     }
 
-    public void setid(Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public LocalDate getfecha() {
+    public LocalDate getFecha() {
         return fecha;
     }
 
-    public void setfecha(LocalDate fecha) {
+    public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
     }
 
-    public LocalTime gethorainicio() {
+    public LocalTime getHorainicio() {
         return horainicio;
     }
 
-    public void sethorainicio(LocalTime horainicio) {
+    public void setHorainicio(LocalTime horainicio) {
         this.horainicio = horainicio;
     }
 
-    public LocalTime gethorafin() {
+    public LocalTime getHorafin() {
         return horafin;
     }
 
-    public void sethorafin(LocalTime horafin) {
+    public void setHorafin(LocalTime horafin) {
         this.horafin = horafin;
     }
 
-    public boolean isocupado() {
+    public boolean isOcupado() {
         return ocupado;
     }
 
-    public void setocupado(boolean ocupado) {
+    public void setOcupado(boolean ocupado) {
         this.ocupado = ocupado;
     }
 
-    public Medico getmedico() {
+    public Medico getMedico() {
         return medico;
     }
 
-    public void setmedico(Medico medico) {
+    public void setMedico(Medico medico) {
         this.medico = medico;
     }
 

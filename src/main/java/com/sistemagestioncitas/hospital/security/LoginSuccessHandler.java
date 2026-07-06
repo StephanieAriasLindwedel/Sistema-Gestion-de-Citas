@@ -13,18 +13,19 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-    public void onAuthenticationSuccess(HttpServletRequest request, 
-                                        HttpServletResponse response,
-                                        Authentication authentication) throws IOException {
-        boolean esAdmin = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .anyMatch(a -> a.equals("ROL_ADMIN"));
+    @Override
+    public void onAuthenticationSuccess(HttpServletRequest request,
+            HttpServletResponse response,
+            Authentication authentication) throws IOException {
+
+        boolean esAdmin = authentication.getAuthorities()
+                .stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
         if (esAdmin) {
-            //Si es admin va a la lista de usuarios
-            response.sendRedirect("/usuarios/lista");
+            response.sendRedirect("/usuario/listaUsuarios");
         } else {
-            //Si es usuario normal, va a su perfil 
-            response.sendRedirect("/usuarios/perfil");
+            response.sendRedirect("/usuario/perfil");
         }
     }
 }

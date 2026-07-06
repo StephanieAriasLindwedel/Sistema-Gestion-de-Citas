@@ -23,13 +23,13 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) {
         if (!usuarioRepository.existsByCorreo("step2299@gmail.com")) {
             Usuario admin = new Usuario();
-            admin.setnombre("Administrador");
-            admin.setcorreo("step2299@gmail.com");
-            admin.setcedula("117580750");
-            admin.setcontacto("8782-5958");
-            admin.setpassword(passwordEncoder.encode("admin123"));
-            admin.setrol("ADMIN");
-            admin.setactivo(true);
+            admin.setNombre("Administrador");
+            admin.setCorreo("step2299@gmail.com");
+            admin.setCedula("117580750");
+            admin.setContacto("8782-5958");
+            admin.setPassword(passwordEncoder.encode("admin123"));
+            admin.setRol("ADMIN");
+            admin.setActivo(true);
             usuarioRepository.save(admin);
             System.out.println("USUARIO ADMIN CREADO: step2299@gmail.com / admin123");
         }

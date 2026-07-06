@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espacios de Citas</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <div class="container-custom fade-in">
+        <div class="page-header flex-between">
+            <div>
+                <h1>Espacios de Cita</h1>
+                <p>
+                    <strong>Médico:</strong> <span th:text="${medico!=null ? medico.nombre : 'Médico'}"></span>
+                    <strong>Especialidad:</strong> <span th:text="${medico!=null ? medico.especialidad : 'Especialidad'}"></span>
+                </p>
+            </div>
+            <div>
+                <a sec:authorize="hasRole('ADMIN')" th:if="${medico != null}" th:href="@{/medico/espacio/nuevo/{id}(id=${medico.id})}" class="btn btn-success">Nuevo Espacio</a>
+                <a th:href="@{/medico}" class="btn btn-secondary">Volver</a>
+            </div>
+        </div>
+        <div class="table-container" th:if="${espacios!=null}">
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Hora Inicio</th>
+                        <th>Hora Fin</th>
+                        <th>Duración</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="espacio:${espacios}">
+                        <td th:text="${espacio.id}"></td>
+                        <td th:if="${espacio.fecha !=null}">
+                            <strong th:text="${#temporals.format(espacio.fecha, 'dd/MM/yyyy')}"></strong>
+                        </td>
+                        <td th:unless="${espacio.fecha!=null}">
+                            <strong></strong>
+                        </td>
+                        <td th:text="${espacio.horaInicio}"></td>
+                        <td th:text="${espacio.horaFin}"></td>
+                        <td>
+                            <span class="badge badge-info">Calculable</span>
+                        </td>
+                        <td>
+                            <span th:if="${espacio.ocupado}" class="badge badge-danger">Ocupado</span>
+                            <span th:unless="${espacio.ocupado}" class="badge badge-success">Disponible</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:if="${espacios==null or #lists.isEmpty(espacios)}" class="alert alert-info mt-3">
+            Este médico no tiene espacios de cita agendados
+        </div>
+    </div>
+</body>
+</html>

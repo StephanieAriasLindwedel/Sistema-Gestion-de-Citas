@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Acceso denegado</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+    </head>
+    <body>
+        <div class="auth-container">
+            <div class="auth-card fade-in">
+                <div class="auth-header" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                    <h2>Acceso Denegado</h2>
+                </div>
+                <div class="auth-body text-center">
+                    <div class="alert alert-danger">
+                        <strong>No tienes permisos</strong> para acceder a esta sección del sistema
+                    </div>
+                    <p style="color: var(--gray-600); margin: 2rem 0;">
+                        Si crees que esto es un error, contacta al administrador del sistema.
+                    </p>
+                    <a th:href="@{/}" class="btn btn-primary">
+                        Volver al Inicio
+                    </a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

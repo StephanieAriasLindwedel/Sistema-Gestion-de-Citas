@@ -31,7 +31,11 @@ public class UsuarioService {
     }
 
     public Usuario guardar(Usuario usuario) {
-        usuario.setpassword(passwordEncoder.encode(usuario.getpassword()));
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        if (usuario.getRol() == null) {
+            usuario.setRol("USUARIO");
+        }
+        usuario.setActivo(true);
         return usuarioRepository.save(usuario);
     }
 
@@ -40,14 +44,14 @@ public class UsuarioService {
     }
 
     public void actualizarPassword(Usuario usuario, String newPass) {
-        usuario.setpassword(passwordEncoder.encode(newPass));
+        usuario.setPassword(passwordEncoder.encode(newPass));
         usuarioRepository.save(usuario);
     }
 
     public void desactivar(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("USUARIO NO ENCONTRADO"));
-        usuario.setactivo(false);
+        usuario.setActivo(false);
         usuarioRepository.save(usuario);
     }
 

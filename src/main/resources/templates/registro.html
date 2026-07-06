@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Sistema de citas</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="auth-card fade-in">
+            <div class="auth-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                <h2>Crear cuenta</h2>
+                <p>Regístrate para agendar tus citas médicas</p>
+            </div>
+            <div class="auth-body">
+                <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                <form th:action="@{/registrar}" th:object="${usuario}" method="post">
+                    <div class="form-group">
+                        <label class="form-label">Nombre Completo *</label>
+                        <input type="text" th:field="*{nombre}" class="form-control" placeholder="Juan Pérez Matarrita" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cédula *</label>
+                        <input type="text" th:field="*{cedula}" class="form-control" placeholder="1234567890" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Correo Electrónico *</label>
+                        <input type="email" th:field="*{correo}" class="form-control" placeholder="juan@ejemplo.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Teléfono de Contacto</label>
+                        <input type="tel" th:field="*{contacto}" class="form-control" placeholder="8888-8888">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contraseña *</label>
+                        <input type="password" th:field="*{password}" class="form-control" placeholder="Mínimo 6 caracteres" required minlength="6">
+                    </div>
+                    <button type="submit" class="btn btn-success btn-block mt-3">Registrarse</button>
+                </form>
+            </div>
+            <div class="auth-footer">
+                <p><a th:href="@{/login}">¿Ya tienes cuenta? Inicia Sesión</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

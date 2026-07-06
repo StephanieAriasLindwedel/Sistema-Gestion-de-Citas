@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Médico</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <div class="container-custom fade-in">
+        <div class="page-header">
+            <h1>Registro de Médico</h1>
+            <p>Agrega un nuevo médico al sistema</p>
+        </div>
+        <div class="card-custom">
+            <div class="card-header-custom">
+                Información del médico
+            </div>
+            <div class="card-body-custom">
+                <form th:action="@{/medico/guardar}" th:object="${medico}" method="post">
+                    <input type="hidden" th:if="${medico != null}" th:field="*{id}">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit,minmax(250px, 1fr));gap:1.5rem;">
+                        <div class="form-group">
+                            <label class="form-label">Nombre del médico</label>
+                            <input type="text" th:field="*{nombre}" class="form-control" placeholder="Dr. Juan Pérez" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Especialidad</label>
+                            <input type="text" th:field="*{especialidad}" class="form-control" placeholder="Cardiología, Oncología, etc" required>
+                        </div>
+                    </div>
+                    <div class="flex-between mt-4">
+                        <a th:href="@{/medico}" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-primary">Guardar Médico</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

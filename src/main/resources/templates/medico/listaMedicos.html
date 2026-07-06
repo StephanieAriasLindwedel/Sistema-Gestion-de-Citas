@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Médicos - Sistema de Citas</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="container-custom fade-in">
+
+    <div class="page-header flex-between">
+
+        <div>
+            <h1>Directorio de Médicos</h1>
+            <p>Consulta los médicos disponibles y sus horarios</p>
+        </div>
+
+        <!-- SOLO ADMIN -->
+        <a sec:authorize="hasRole('ROLE_ADMIN')"
+           th:href="@{/medico/nuevo}"
+           class="btn btn-success">
+            Nuevo Médico
+        </a>
+
+    </div>
+
+    <!-- LISTA SEGURA -->
+    <div class="medicos-grid"
+         th:if="${medicos != null and !#lists.isEmpty(medicos)}">
+
+        <div class="medico-card" th:each="medico : ${medicos}">
+
+            <h3 th:text="${medico.nombre}">Dr. Nombre</h3>
+            <p class="especialidad" th:text="${medico.especialidad}">Especialidad</p>
+
+            <div class="acciones">
+
+                <!-- SIEMPRE DISPONIBLE -->
+                <a th:href="@{/medico/{id}/espacios(id=${medico.id})}"
+                   class="btn btn-info btn-sm">
+                    Ver Espacios
+                </a>
+
+                <!-- SOLO ADMIN -->
+                <a sec:authorize="hasRole('ROLE_ADMIN')"
+                   th:href="@{/medico/editar/{id}(id=${medico.id})}"
+                   class="btn btn-warning btn-sm">
+                    Editar
+                </a>
+
+                <!-- SOLO ADMIN -->
+                <a sec:authorize="hasRole('ROLE_ADMIN')"
+                   th:href="@{/medico/eliminar/{id}(id=${medico.id})}"
+                   class="btn btn-danger btn-sm"
+                   onclick="return confirm('¿Eliminar este médico? Se eliminarán también sus espacios')">
+                    Eliminar
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- MENSAJE SI NO HAY DATOS -->
+    <div th:if="${medicos == null or #lists.isEmpty(medicos)}"
+         class="alert alert-info mt-4">
+        No hay médicos registrados. Los administradores pueden agregar nuevos médicos.
+    </div>
+
+</div>

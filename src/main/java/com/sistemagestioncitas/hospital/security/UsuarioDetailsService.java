@@ -19,17 +19,25 @@ public class UsuarioDetailsService implements UserDetailsService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    public UserDetails loadUserByUsername(String correo) throws UsernameNotFoundException {
-        //busqueda por correo
-        Usuario usuario = usuarioRepository.findByCorreo(correo).orElseThrow(()
-                -> new UsernameNotFoundException("Usuario no encontrado con el correo: " + correo));
-        //validacion adicional : inactivo
-        if (!usuario.isactivo()) {
-            throw new UsernameNotFoundException("Usuario inactivo: " + correo);
+    @Override
+    public UserDetails loadUserByUsername(String correo) {
+
+        Usuario usuario = usuarioRepository.findByCorreo(correo)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+        if (!usuario.isActivo()) {
+            throw new UsernameNotFoundException("Usuario desactivado");
         }
-        return User.builder().username(usuario.getcorreo())
-                .password(usuario.getpassword())//Ya viene encriptada
-                .authorities(new SimpleGrantedAuthority("ROL_" + usuario.getrol()))//Ya viene desde la entidad
+
+        String rol = usuario.getRol();
+        if (!rol.startsWith("ROLE_")) {
+            rol = "ROLE_" + rol;
+        }
+
+        return User.builder()
+                .username(usuario.getCorreo())
+                .password(usuario.getPassword())
+                .authorities(new SimpleGrantedAuthority(rol))
                 .build();
     }
 }

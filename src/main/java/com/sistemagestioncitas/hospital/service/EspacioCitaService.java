@@ -38,7 +38,7 @@ public class EspacioCitaService {
     public void ocupar(Long id) {
         EspacioCita espacio = espacioCitaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("USUARIO NO ENCONTRADO"));
-        espacio.setocupado(true);
+        espacio.setOcupado(true);
         espacioCitaRepository.save(espacio);
     }
 }
