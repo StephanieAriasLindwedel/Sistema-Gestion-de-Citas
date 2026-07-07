@@ -30,14 +30,16 @@ public class UsuarioDetailsService implements UserDetailsService {
         }
 
         String rol = usuario.getRol();
-        if (!rol.startsWith("ROLE_")) {
-            rol = "ROLE_" + rol;
-        }
+        /*
+         * if (!rol.startsWith("ROLE_")) {
+         * rol = "ROLE_" + rol;
+         * }
+         */
 
         return User.builder()
                 .username(usuario.getCorreo())
                 .password(usuario.getPassword())
-                .authorities(new SimpleGrantedAuthority(rol))
+                .roles(rol)
                 .build();
     }
 }

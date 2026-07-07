@@ -26,7 +26,7 @@
                 <div th:if="${error != null}" class="alert alert-danger" th:text="${error}"></div>
                 <div th:if="${exito != null}" class="alert alert-success" th:text="${exito}"></div>
 
-                <form th:action="@{/usuario/guardar}" th:object="${usuarios}" method="post">
+                <form th:action="@{/usuario/guardar}" th:object="${usuario}" method="post">
                     <input type="hidden" th:field="*{id}">
                     <input type="hidden" th:field="*{rol}">
 
@@ -63,14 +63,14 @@
 
                     <div class="flex-between mt-4">
                         <div>
-                            <span class="badge badge-info" th:text="'Rol: ' + ${usuarios.rol}"></span>
+                            <span class="badge badge-info" th:text="'Rol: ' + ${usuario.rol}"></span>
                         </div>
                         <button type="submit" class="btn btn-primary">
                             Guardar Cambios
                         </button>
                     </div>
                 </form>
-                <div th:if="${usuarios == null}" class="alert alert-danger">
+                <div th:if="${usuario == null}" class="alert alert-danger">
                     Usuario no encontrado
                 </div>
             </div>
