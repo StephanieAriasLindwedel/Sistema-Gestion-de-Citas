@@ -63,4 +63,10 @@ public class UsuarioService {
         return usuarioRepository.existsByCedula(cedula);
     }
 
+    public void activar(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("USUARIO NO ENCONTRADO"));
+        usuario.setActivo(true);
+        usuarioRepository.save(usuario);
+    }
 }

@@ -14,9 +14,14 @@
                 <h1>Gestión de Usuarios</h1>
                 <p>Administra todos los usuarios del sistema</p>
             </div>
-            <a th:href="@{/medico}" class="btn btn-info">
-                Ir a Médicos
-            </a>
+            <div style="display: flex; gap: 1rem;">
+                <a th:href="@{/usuario/nuevo}" class="btn btn-success">
+                    Nuevo Usuario
+                </a>
+                <a th:href="@{/medico}" class="btn btn-info">
+                    Ir a Médicos
+                </a>
+            </div>
         </div>
         <div class="table-container" th:if="${usuarios != null and !#lists.isEmpty(usuarios)}">
             <table class="table-custom">
@@ -50,6 +55,7 @@
                        <td>
                         <a th:href="@{/usuario/editar/{id}(id=${usuario.id})}" class="btn btn-warning btn-sm">Editar</a>
                         <a th:href="@{/usuario/desactivar/{id}(id=${usuario.id})}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de desactivar este usuario?')">Desactivar</a>
+                        <a th:href="@{/usuario/activar/{id}(id=${usuario.id})}" class="btn btn-success btn-sm" onclick="return confirm('¿Estás seguro de activar este usuario?')">Activar</a>
                        </td> 
                     </tr>
                 </tbody>

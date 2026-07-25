@@ -14,53 +14,54 @@ import com.sistemagestioncitas.hospital.security.LoginSuccessHandler;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final LoginSuccessHandler loginSuccessHandler;
+        private final LoginSuccessHandler loginSuccessHandler;
 
-    public SecurityConfig(LoginSuccessHandler loginSuccessHandler) {
-        this.loginSuccessHandler = loginSuccessHandler;
-    }
+        public SecurityConfig(LoginSuccessHandler loginSuccessHandler) {
+                this.loginSuccessHandler = loginSuccessHandler;
+        }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/registro", "/registrar", "/recuperar",
-                                "/css/**", "/js/**", "/h2-console/**")
-                        .permitAll()
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+                http
+                                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers("/login", "/registro", "/registrar", "/recuperar",
+                                                                "/css/**", "/js/**", "/h2-console/**")
+                                                .permitAll()
 
-                        .requestMatchers("/usuario/perfil", "/usuario/guardar",
-                                "/medico", "/medico/{id}/espacios")
-                        .hasAnyRole("USUARIO", "ADMIN")
+                                                .requestMatchers("/usuario/perfil", "/usuario/guardar",
+                                                                "/medico", "/medico/{id}/espacios")
+                                                .hasAnyRole("USUARIO", "ADMIN")
 
-                        .requestMatchers("/usuario/listaUsuarios",
-                                "/usuario/editar/**",
-                                "/usuario/desactivar/**",
-                                "/usuario/admin/**",
-                                "/medico/nuevo",
-                                "/medico/guardar",
-                                "/medico/editar/**",
-                                "/medico/eliminar/**",
-                                "/medico/espacio/**")
-                        .hasRole("ADMIN")
-                        .anyRequest().authenticated())
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/login")
-                        .successHandler(loginSuccessHandler)
-                        .failureUrl("/login?error=true")
-                        .permitAll())
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/login?logout")
-                        .permitAll())
-                .exceptionHandling(ex -> ex.accessDeniedPage("/acceso-denegado"))
-                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));
+                                                .requestMatchers("/usuario/listaUsuarios",
+                                                                "/usuario/nuevo",
+                                                                "/usuario/editar/**",
+                                                                "/usuario/desactivar/**",
+                                                                "/usuario/admin/**",
+                                                                "/medico/nuevo",
+                                                                "/medico/guardar",
+                                                                "/medico/editar/**",
+                                                                "/medico/eliminar/**",
+                                                                "/medico/espacio/**")
+                                                .hasRole("ADMIN")
+                                                .anyRequest().authenticated())
+                                .formLogin(form -> form
+                                                .loginPage("/login")
+                                                .loginProcessingUrl("/login")
+                                                .successHandler(loginSuccessHandler)
+                                                .failureUrl("/login?error=true")
+                                                .permitAll())
+                                .logout(logout -> logout
+                                                .logoutSuccessUrl("/login?logout")
+                                                .permitAll())
+                                .exceptionHandling(ex -> ex.accessDeniedPage("/acceso-denegado"))
+                                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
+                                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));
 
-        return http.build();
-    }
+                return http.build();
+        }
 }

@@ -99,37 +99,52 @@ public class UsuarioController {
     @PostMapping("/usuario/admin/guardar")
     public String guardarDesdeAdmin(@ModelAttribute Usuario usuario,
             RedirectAttributes redirectAttributes) {
-
-        if (usuario.getId() == null) {
-            return "redirect:/usuario/listaUsuarios";
+        // Si hay un ID, es edicion; si no, es creacion
+        if (usuario.getId() != null) {
+            // Edicion de usuario existente
+            Optional<Usuario> existente = usuarioService.obtenerPorId(usuario.getId());
+            if (existente.isPresent()) {
+                Usuario actual = existente.get();
+                if (!actual.getCorreo().equals(usuario.getCorreo())
+                        && usuarioService.existeCorreo(usuario.getCorreo())) {
+                    redirectAttributes.addFlashAttribute("error", "El correo ya está registrado");
+                    return "redirect:/usuario/editar/" + usuario.getId();
+                }
+                if (!actual.getCedula().equals(usuario.getCedula())
+                        && usuarioService.existeCedula(usuario.getCedula())) {
+                    redirectAttributes.addFlashAttribute("error", "La cédula ya está registrado");
+                    return "redirect:/usuario/editar/" + usuario.getId();
+                }
+                actual.setNombre(usuario.getNombre());
+                actual.setCorreo(usuario.getCorreo());
+                actual.setCedula(usuario.getCedula());
+                actual.setContacto(usuario.getContacto());
+                actual.setRol(usuario.getRol());
+                usuarioService.actualizar(actual);
+                redirectAttributes.addFlashAttribute("exito", "Usuario actualizado correctamente");
+            }
+        } else {
+            // Creacion de nuevo usuario
+            if (usuarioService.existeCedula(usuario.getCedula())) {
+                redirectAttributes.addFlashAttribute("error", "La cédula ya está registrado");
+                return "redirect:/usuario/nuevo";
+            }
+            if (usuarioService.existeCorreo(usuario.getCorreo())) {
+                redirectAttributes.addFlashAttribute("error", "El correo ya está registrado");
+                return "redirect:/usuario/nuevo";
+            }
+            if (usuario.getCorreo() == null || usuario.getCorreo().isEmpty() ||
+                    usuario.getCedula() == null || usuario.getCedula().isEmpty() ||
+                    usuario.getNombre() == null || usuario.getNombre().isEmpty() ||
+                    usuario.getPassword() == null || usuario.getPassword().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Todos los campos son obligatorios");
+                return "redirect:/usuario/nuevo";
+            }
+            usuario.setActivo(true);
+            usuarioService.guardar(usuario);
+            redirectAttributes.addFlashAttribute("exito", "Usuario creado correctamente");
         }
-
-        return usuarioService.obtenerPorId(usuario.getId())
-                .map(actual -> {
-
-                    if (!actual.getCorreo().equals(usuario.getCorreo())
-                            && usuarioService.existeCorreo(usuario.getCorreo())) {
-                        redirectAttributes.addFlashAttribute("error", "Correo ya existe");
-                        return "redirect:/usuario/editar/" + usuario.getId();
-                    }
-
-                    if (!actual.getCedula().equals(usuario.getCedula())
-                            && usuarioService.existeCedula(usuario.getCedula())) {
-                        redirectAttributes.addFlashAttribute("error", "Cédula ya existe");
-                        return "redirect:/usuario/editar/" + usuario.getId();
-                    }
-
-                    actual.setNombre(usuario.getNombre());
-                    actual.setCorreo(usuario.getCorreo());
-                    actual.setCedula(usuario.getCedula());
-                    actual.setContacto(usuario.getContacto());
-                    actual.setRol(usuario.getRol());
-
-                    usuarioService.actualizar(actual);
-
-                    return "redirect:/usuario/listaUsuarios";
-                })
-                .orElse("redirect:/usuario/listaUsuarios");
+        return "redirect:/usuario/listaUsuarios";
     }
 
     // DESACTIVAR
@@ -138,5 +153,18 @@ public class UsuarioController {
 
         usuarioService.desactivar(id);
         return "redirect:/usuario/listaUsuarios";
+    }
+
+    @GetMapping("/usuario/activar/{id}")
+    public String activarUsuario(@PathVariable Long id) {
+
+        usuarioService.activar(id);
+        return "redirect:/usuario/listaUsuarios";
+    }
+
+    @GetMapping("/usuario/nuevo")
+    public String mostrarFormularioAdmin(Model model) {
+        model.addAttribute("usuario", new Usuario());
+        return "usuario/registro_admin";
     }
 }
