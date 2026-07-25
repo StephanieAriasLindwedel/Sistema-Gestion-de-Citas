@@ -27,6 +27,11 @@ public class EspacioCitaService {
         return espacioCitaRepository.findByOcupadoFalse();
     }
 
+    // Método que conecta con el repository de cita
+    public List<EspacioCita> listarDisponiblesPorMedico(Long medicoId) {
+        return espacioCitaRepository.findByMedicoIdAndOcupadoFalse(medicoId);
+    }
+
     public Optional<EspacioCita> obtenerPorId(Long id) {
         return espacioCitaRepository.findById(id);
     }
@@ -37,7 +42,7 @@ public class EspacioCitaService {
 
     public void ocupar(Long id) {
         EspacioCita espacio = espacioCitaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("USUARIO NO ENCONTRADO"));
+                .orElseThrow(() -> new RuntimeException("ESPACIO DE CITA NO ENCONTRADO"));
         espacio.setOcupado(true);
         espacioCitaRepository.save(espacio);
     }

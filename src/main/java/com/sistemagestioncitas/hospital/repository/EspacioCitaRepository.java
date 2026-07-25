@@ -13,4 +13,6 @@ public interface EspacioCitaRepository extends JpaRepository<EspacioCita, Long> 
     List<EspacioCita> findByMedicoId(Long medicoId);
 
     List<EspacioCita> findByOcupadoFalse();
+
+    List<EspacioCita> findByMedicoIdAndOcupadoFalse(Long medicoId);
 }

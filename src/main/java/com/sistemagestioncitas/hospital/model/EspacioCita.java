@@ -3,12 +3,14 @@ package com.sistemagestioncitas.hospital.model;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -25,6 +27,8 @@ public class EspacioCita {
     @ManyToOne
     @JoinColumn(name = "medico_id")
     private Medico medico;
+    @OneToMany(mappedBy = "espacioCita", cascade = CascadeType.ALL)
+    private Cita cita;
 
     public Long getId() {
         return id;
@@ -72,6 +76,14 @@ public class EspacioCita {
 
     public void setMedico(Medico medico) {
         this.medico = medico;
+    }
+
+    public Cita getCita() {
+        return cita;
+    }
+
+    public void setCita(Cita cita) {
+        this.cita = cita;
     }
 
 }

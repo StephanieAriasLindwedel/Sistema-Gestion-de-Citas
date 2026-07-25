@@ -20,7 +20,9 @@ public class Medico {
     private String nombre;
     private String especialidad;
     @OneToMany(mappedBy = "medico", cascade = CascadeType.ALL, orphanRemoval = true)
-    private java.util.List<EspacioCita> espacios = new java.util.ArrayList<>();
+    private List<EspacioCita> espacios;
+    @OneToMany(mappedBy = "medico", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cita> citas;
 
     public Long getId() {
         return id;
@@ -55,6 +57,14 @@ public class Medico {
     }
 
     public Medico() {
+    }
+
+    public List<Cita> getCitas() {
+        return citas;
+    }
+
+    public void setCitas(List<Cita> citas) {
+        this.citas = citas;
     }
 
 }
