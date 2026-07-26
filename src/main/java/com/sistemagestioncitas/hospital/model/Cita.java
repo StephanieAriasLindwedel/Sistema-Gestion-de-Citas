@@ -26,8 +26,8 @@ public class Cita {
     @JoinColumn(name = "medico_id", nullable = false)
     private Medico medico;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "espacio_id", nullable = false)
-    private EspacioCita espacio;
+    @JoinColumn(name = "espacio_cita_id", nullable = false)
+    private EspacioCita espacioCita;
     @Column(nullable = false)
     private LocalDateTime fechaHora;
     @Column(nullable = false)
@@ -68,11 +68,11 @@ public class Cita {
     }
 
     public EspacioCita getEspacio() {
-        return espacio;
+        return espacioCita;
     }
 
     public void setEspacio(EspacioCita espacio) {
-        this.espacio = espacio;
+        this.espacioCita = espacio;
     }
 
     public LocalDateTime getFechaHora() {

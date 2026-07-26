@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Mis Citas</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+    </head>
+    <body>
+        <div th:replace="fragments/navbar :: navbar"></div>
+        <div class="container-custom fade-in">
+            <div class="page-header flex-between">
+                <h1>Mis citas</h1>
+                <a th:href="@{/cita/nueva}" class="btn btn-success">Nueva Cita</a>
+            </div>
+            <div th:if="${exito}" class="alert alert-success" th:text="${exito}"></div>
+            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+            <div class="citas-list">
+                <div th:each="cita: ${citas}" class="cita-card" th:classappend="${cita.estado=='PENDIENTE'} ? 'border-warning' : (${cita.estado == 'CONFIRMADA'} ? 
+                'border-success' : 'border-danger')">
+                    <div class="cita-header">
+                        <h3 th:text="${cita.medico.nombre}"></h3>
+                        <span class="badge" th:classappend="${cita.estado=='PENDIENTE'} ? 'border-warning' : (${cita.estado == 'CONFIRMADA'} ? 'border-success' : 'border-danger')" 
+                        th:text="${cita.estado}"></span>
+                    </div>
+                    <div class="cita-body">
+                        <p><strong>Especialidad: </strong> <span th:text="${cita.medico.especialidad}"></span></p>
+                        <p><strong>Fecha: </strong> <span th:text="${#temporals.format(cita.espacio.fecha,'dd/MM/yyyy')}"></span></p>
+                        <p><strong>Hora: </strong> <span th:text="${cita.espacio.horaInicio} + ' - ' + ${cita.espacio.horaFin}"></span></p>
+                    </div>
+                    <div class="cita-actions">
+                        <a th:if="${cita.estado == 'PENDIENTE' || cita.estado == 'CONFIRMADA'}" th:href="@{/cita/cancelar/{id}(id=${cita.id})}" class="btn btn-danger btn-sm" onclick="return confirm('¿Cancelar cita?')">Cancelar</a>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${#lists.isEmpty(citas)}" class="alert alert-info mt-3">No tienes citas registradas.</div>
+        </div>
+    </body>
+</html>

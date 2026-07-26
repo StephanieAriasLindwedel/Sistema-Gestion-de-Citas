@@ -2,6 +2,8 @@ package com.sistemagestioncitas.hospital.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,8 +22,10 @@ public class Medico {
     private String nombre;
     private String especialidad;
     @OneToMany(mappedBy = "medico", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<EspacioCita> espacios;
     @OneToMany(mappedBy = "medico", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Cita> citas;
 
     public Long getId() {

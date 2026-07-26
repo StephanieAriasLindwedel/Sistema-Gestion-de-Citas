@@ -36,7 +36,7 @@ public class CitaService {
         }
         // RN4:Validacion de fecha y hora pasada (No es permitido)
         LocalDateTime ahora = LocalDateTime.now();
-        LocalDateTime fechaHoraCita = LocalDateTime.of(espacio.getFecha(), espacio.getHorainicio());
+        LocalDateTime fechaHoraCita = LocalDateTime.of(espacio.getFecha(), espacio.getHoraInicio());
         if (fechaHoraCita.isBefore(ahora)) {
             throw new RuntimeException("No se pueden crear citas en fechas u horas pasadas");
         }
@@ -44,8 +44,8 @@ public class CitaService {
         List<Cita> citasSolapadas = citaRepository.findByUsuarioIdAndHorarioSolapado(
                 usuarioId,
                 espacio.getFecha(),
-                espacio.getHorainicio(),
-                espacio.getHorafin());
+                espacio.getHoraInicio(),
+                espacio.getHoraFin());
         if (!citasSolapadas.isEmpty()) {
             throw new RuntimeException("Ya tiene una cita programada en este horario");
         }
@@ -55,6 +55,7 @@ public class CitaService {
         cita.setMedico(espacio.getMedico());
         cita.setEspacio(espacio);
         cita.setEstado("PENDIENTE");
+        cita.setFechaHora(fechaHoraCita);
         // Marcar el espacio como ocupado
         espacio.setOcupado(true);
         espacioCitaRepository.save(espacio);
@@ -91,7 +92,7 @@ public class CitaService {
         LocalDateTime ahora = LocalDateTime.now();
         LocalDateTime fechaHoraCita = LocalDateTime.of(
                 cita.getEspacio().getFecha(),
-                cita.getEspacio().getHorainicio());
+                cita.getEspacio().getHoraInicio());
         if (fechaHoraCita.isBefore(ahora)) {
             throw new RuntimeException("No se puede cancelar una cita cuya fecha ya pasó");
         }

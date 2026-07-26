@@ -16,37 +16,26 @@
 <div class="container-custom fade-in">
 
     <div class="page-header flex-between">
-
-        <div>
             <h1>Directorio de Médicos</h1>
             <p>Consulta los médicos disponibles y sus horarios</p>
-        </div>
 
         <!-- SOLO ADMIN -->
         <a sec:authorize="hasRole('ROLE_ADMIN')"
-           th:href="@{/medico/nuevo}"
-           class="btn btn-success">
-            Nuevo Médico
-        </a>
+           th:href="@{/medico/nuevo}" class="btn btn-success"> Nuevo Médico </a>
 
     </div>
 
     <!-- LISTA SEGURA -->
-    <div class="medicos-grid"
-         th:if="${medicos != null and !#lists.isEmpty(medicos)}">
+    <div class="medicos-grid" th:if="${medicos != null and !#lists.isEmpty(medicos)}">
 
         <div class="medico-card" th:each="medico : ${medicos}">
 
             <h3 th:text="${medico.nombre}">Dr. Nombre</h3>
             <p class="especialidad" th:text="${medico.especialidad}">Especialidad</p>
-
             <div class="acciones">
 
                 <!-- SIEMPRE DISPONIBLE -->
-                <a th:href="@{/medico/{id}/espacios(id=${medico.id})}"
-                   class="btn btn-info btn-sm">
-                    Ver Espacios
-                </a>
+                <a th:href="@{/medico/{id}/espacios(id=${medico.id})}" class="btn btn-info btn-sm"> Ver Espacios </a>
 
                 <!-- SOLO ADMIN -->
                 <a sec:authorize="hasRole('ROLE_ADMIN')"

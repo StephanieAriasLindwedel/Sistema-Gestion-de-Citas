@@ -165,7 +165,7 @@ public class CitaController {
     /**
      * Confirmar Citas
      */
-    @GetMapping("cita/admin/confirmar/{id}")
+    @GetMapping("/cita/admin/confirmar/{id}")
     public String confirmarCitaAdmin(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             citaService.confirmarCita(id);
@@ -189,7 +189,22 @@ public class CitaController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error al cancelar la cita: " + e.getMessage());
         }
-        return "redirect:/citas/admin";
+        return "redirect:/cita/admin";
     }
 
+    /**
+     * Marcar cita como Ausente (ADMIN)
+     */
+    @PostMapping("/cita/admin/ausente/{id}")
+    public String marcarAusente(@PathVariable Long id,
+            @RequestParam(required = false) String motivo,
+            RedirectAttributes redirectAttributes) {
+        try {
+            citaService.marcarComoAusente(id, motivo);
+            redirectAttributes.addFlashAttribute("exito", "Cita marcada como AUSENTE. Espacio liberado.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error: " + e.getMessage());
+        }
+        return "redirect:/cita/admin";
+    }
 }

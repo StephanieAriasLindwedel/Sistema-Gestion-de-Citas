@@ -2,14 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <body>
         <nav th:fragment="navbar" class="navbar-custom">
-            <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+            <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg,#2563eb 0% #1d4ed8 100%); box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                 <a th:href="@{/}" class="navbar-brand" style="text-decoration: none;">SISTEMA DE CITAS HOSPITALARIO</a>
                 <div style="display: flex; align-items: center; gap: 1rem;">
                     <a th:href="@{/usuario/perfil}" class="nav-link">Mi perfil</a>
                     <a th:href="@{/medico}" class="nav-link">Médicos</a>
+                    <a sec:authorize="hasRole('USUARIO')"th:href="@{/cita/mis-citas}" class="nav-link">Mis Citas</a>
                     <a sec:authorize="hasRole('ADMIN')"
                         th:href="@{/usuario/listaUsuarios}"
-                        class="nav-link">Administrador</a>
+                        class="nav-link">Usuarios</a>
+                    <a sec:authorize="hasRole('ADMIN')" th:href="@{/cita/admin}" class="nav-link">
+                        Administrar Citas
+                    </a>
                     <form th:action="@{/logout}" method="post" style="margin:0;">
                         <button type="submit" class="btn-logout">Cerrar Sesión</button>
                     </form>

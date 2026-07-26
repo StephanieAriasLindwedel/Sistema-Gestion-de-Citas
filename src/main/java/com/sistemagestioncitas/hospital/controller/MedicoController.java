@@ -75,8 +75,14 @@ public class MedicoController {
     }
 
     @PostMapping("/medico/espacio/guardar")
-    public String guardarEspacio(@ModelAttribute EspacioCita espacio,
-            @RequestParam Long medicoId) {
+    public String guardarEspacio(@ModelAttribute EspacioCita espacio, @RequestParam Long medicoId) {
+        /*
+         * // Funciona directamente sin importar nada
+         * System.out.println("=== DEBUG: Guardando espacio ===");
+         * System.out.println("Fecha: " + espacio.getFecha());
+         * System.out.println("Hora Inicio: " + espacio.getHoraInicio());
+         * System.out.println("Hora Fin: " + espacio.getHoraFin());
+         */
 
         Medico medico = medicoService.obtenerPorId(medicoId)
                 .orElseThrow(() -> new RuntimeException("Médico no encontrado"));

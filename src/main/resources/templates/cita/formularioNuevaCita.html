@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <meta charset="UTF-8">
+        <title>RESERVAR CITA</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+    </head>
+    <body>
+        <div th:replace="fragments/navbar :: navbar"></div>
+        <div class="container-custom fade-in">
+            <div class="page-header"><h1>Reservar Nueva Cita</h1></div>
+            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+            <div class="card-custom">
+                <div class="card-body-custom">
+                    <form th:action="@{/cita/guardar}" method="post" id="formularioCita">
+                        <!--Select de Paciente (SOLO PARA ADMINISTRADORES)-->
+                        <div class="form-group" sec:authorize="hasRole('ADMIN')">
+                            <label class="form-label">Paciente *</label>
+                            <select name="usuarioIdSeleccionado" class="form-control select-custom" required>
+                                <option value="">Seleccione un paciente</option>
+                                <option th:each="u: ${usuarios}" th:value="${u.id}" th:text="${u.nombre + ' ('+u.cedula+')'}"></option>
+                            </select>
+                        </div>
+                        <!--Campo oculto para usuarios normales-->
+                        <input type="hidden" name="usuarioIdSeleccionado" th:if="${!#authorization.expression('hasRole(''ADMIN'')')}" th:value="${usuarioId}">
+                        <div class="form-group">
+                            <label class="form-label">Médico / Especialidad *</label>
+                            <select id="medicoSelect" class="form-control select-custom" required>
+                                <option value="">Seleccione un médico</option>
+                                <option th:each="medico : ${medicos}" th:value="${medico.id}" th:text="${medico.nombre + ' - '+ medico.especialidad}"></option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Espacio Disponible *</label>
+                            <select name="espacioCitaId" id="espacioSelect" class="form-control select-custom" required>
+                                <option value="">Primero seleccione un médico</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success">Reservar Cita</button>
+                        <a th:href="@{/cita/mis-citas}" class="btn btn-secondary">Cancelar</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!--JSON-->
+        <script>
+            //AJAX para cargar espacios disponibles
+            document.getElementById('medicoSelect').addEventListener('change', function(){
+                const medicoId = this.value;
+                const espacioSelect = document.getElementById('espacioSelect');
+                if(medicoId){
+                    espacioSelect.innerHTML='<option value="">Cargando espacios...</option>';
+                    const url ='/cita/espacios/'+medicoId;
+                    console.log("URL a consultar: ", url);
+                    fetch(url)
+                    .then(response=>{
+                        console.log("Respuesta Recibida: ",response.status);
+                        if(!response.ok){
+                            throw new Error('HTTP error! status: '+response.status);
+                        }
+                        return response.json();
+                    })
+                    .then(espacios =>{
+                        console.log("Espacios recibidos:",espacios);
+                        console.log("Cantidad: ",espacios.length);
+                        espacioSelect.innerHTML='<option value="">Seleccione un espacio disponible</option>';
+                        if(espacios.length===0){
+                            espacioSelect.innerHTML='<option value="">No hay espacios disponibles</option>';
+                            alert('No hay espacios disponibles para este médico');
+                        }else{
+                            espacios.forEach(espacio=>{
+                                const option = document.createElement('option');
+                                option.value=espacio.id;
+                                const fecha = espacio.fecha;
+                                const horaInicio = espacio.horaInicio;
+                                const horaFin = espacio.horaFin;
+                                option.text=fecha+' '+horaInicio+' - '+horaFin;
+                                option.dataset.medico=espacio.medico?.nombre || '';
+                                espacioSelect.appendChild(option);
+                            });
+                        }
+                    })
+                    .catch(error =>{
+                        console.error("Error al cargar espacios: ",error);
+                        espacioSelect.innerHTML='<option value="">Error al cargar espacios</option>';
+                    })
+                }else{
+                    espacioSelect.innerHTML='<option value="">Primero seleccione un médico</option>';
+                }
+            });
+        </script>
+    </body>
+</html>

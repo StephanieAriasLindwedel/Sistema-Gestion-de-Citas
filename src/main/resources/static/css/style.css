@@ -487,3 +487,288 @@ body{
 ::-webkit-scrollbar-thumb:hover{
     background:var(--gray-600);
 }
+/*================================================
+    GESTIÓN DE CITAS
+==================================================*/
+.citas-list{
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(350px,1fr));
+    gap: 1.5rem;
+}
+.cita-card{
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    padding: 1.5rem;
+    border-left: 4px solid var(--gray-300);
+    transition: var(--transition);
+}
+.cita-card:hover{
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+.cita-card.border-warning{border-left-color:var(--warning-color);}
+.cita-card.border-success{border-left-color:var(--secondary-color);}
+.cita-card.border-danger{border-left-color:var(--danger-color);}
+.cita-card.border-info{border-left-color:var(--info-color);}
+.cita-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--gray-200);
+}
+.cita-header h3{
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--dark-color);
+}
+.cita-body{
+    margin-bottom: 1rem;
+}
+.cita-info{
+    margin-bottom: 0.5rem;
+    color: var(--gray-600);
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.cita-info strong{
+    color: var(--dark-color);
+    min-width: 90px;
+}
+.cita-actions{
+    display: flex;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--gray-200);
+    flex-wrap: wrap;
+}
+/*================================================
+    TABS Y FILTROS
+==================================================*/
+.tabs {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.tabs .btn {
+    background: white;
+    color: var(--gray-600);
+    border: 1px solid var(--gray-200);
+}
+
+.tabs .btn:hover {
+    background: var(--gray-100);
+    color: var(--dark-color);
+}
+
+.tabs .btn-primary {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.filters {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    margin-bottom: 2rem;
+}
+
+.filters form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    align-items: end;
+}
+
+/*================================================
+    DASHBOARD Y ESTADÍSTICAS
+==================================================*/
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.dashboard-card {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    border-top: 4px solid var(--primary-color);
+    transition: var(--transition);
+    text-align: center;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.dashboard-card h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: var(--dark-color);
+}
+
+.dashboard-card p {
+    color: var(--gray-600);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    border-left: 4px solid var(--primary-color);
+    display: flex;
+    flex-direction: column;
+    transition: var(--transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.stat-card h3 {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--gray-600);
+    margin: 0;
+}
+
+.stat-card p {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark-color);
+    margin: 0.5rem 0 0 0;
+}
+
+.stat-card.warning { border-left-color: var(--warning-color); }
+.stat-card.success { border-left-color: var(--secondary-color); }
+.stat-card.danger { border-left-color: var(--danger-color); }
+.stat-card.info { border-left-color: var(--info-color); }
+
+/*================================================
+    MODALES (Para confirmar acciones como "Ausente")
+==================================================*/
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(30, 41, 59, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    max-width: 500px;
+    width: 90%;
+    transform: scale(0.95);
+    transition: var(--transition);
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+}
+
+.modal-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--dark-color);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+/*================================================
+    ESTADOS VACÍOS (Empty States)
+==================================================*/
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--gray-600);
+    background: white;
+    border-radius: var(--radius);
+    border: 2px dashed var(--gray-200);
+}
+
+.empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/*================================================
+    MEJORAS RESPONSIVE ADICIONALES
+==================================================*/
+@media (max-width: 768px) {
+    .citas-list {
+        grid-template-columns: 1fr;
+    }
+    
+    .cita-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .filters form {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-content {
+        width: 95%;
+        padding: 1.5rem;
+    }
+}

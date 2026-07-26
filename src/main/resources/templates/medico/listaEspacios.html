@@ -30,24 +30,17 @@
                         <th>Fecha</th>
                         <th>Hora Inicio</th>
                         <th>Hora Fin</th>
-                        <th>Duración</th>
                         <th>Estado</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:each="espacio:${espacios}">
                         <td th:text="${espacio.id}"></td>
-                        <td th:if="${espacio.fecha !=null}">
+                        <td>
                             <strong th:text="${#temporals.format(espacio.fecha, 'dd/MM/yyyy')}"></strong>
                         </td>
-                        <td th:unless="${espacio.fecha!=null}">
-                            <strong></strong>
-                        </td>
-                        <td th:text="${espacio.horainicio}"></td>
-                        <td th:text="${espacio.horafin}"></td>
-                        <td>
-                            <span class="badge badge-info">Calculable</span>
-                        </td>
+                        <td th:text="${#temporals.format(espacio.horaInicio, 'HH:mm')}"></td>
+                        <td th:text="${#temporals.format(espacio.horaFin, 'HH:mm')}"></td>
                         <td>
                             <span th:if="${espacio.ocupado}" class="badge badge-danger">Ocupado</span>
                             <span th:unless="${espacio.ocupado}" class="badge badge-success">Disponible</span>
