@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nuevo Espacio de Citas</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/base.css}">  
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/components.css}">
+    <link rel="stylesheet" th:href="@{/css/modules.css}">
 </head>
 <body>
     <div th:replace="~{fragments/navbar :: navbar}"></div>
@@ -13,6 +16,8 @@
             <h1>Nuevo Espacio de Cita</h1>
             <p>Agenda la nueva cita para el médico</p>
         </div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        <div th:if="${exito}" class="alert alert-success" th:text="${exito}"></div>
         <div class="card-custom">
             <div class="card-header-custom">
                 Configuración de horario

@@ -1,29 +1,38 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administración de Citas</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/components.css}">
+    <link rel="stylesheet" th:href="@{/css/modules.css}">
 </head>
+
 <body>
     <div th:replace="fragments/navbar :: navbar"></div>
-    
+
     <div class="container-custom fade-in">
         <div class="page-header flex-between">
             <div>
                 <h1>Panel de Administración de Citas</h1>
                 <p>Monitoreo y gestión de todas las citas del sistema</p>
             </div>
-            <a th:href="@{/}" class="btn btn-secondary">← Volver al Inicio</a>
+            <div style="display: flex; gap: 0.75rem;">
+                <a th:href="@{/cita/nueva}" class="btn btn-success">Nueva Cita</a>
+                <a th:href="@{/}" class="btn btn-secondary">← Volver al Inicio</a>
+            </div>
         </div>
-        
+
         <div th:if="${exito}" class="alert alert-success" th:text="${exito}"></div>
         <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-        
+
         <!-- Filtros avanzados -->
         <div class="filters mb-4">
-            <form th:action="@{/cita/admin}" method="get" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <form th:action="@{/cita/admin}" method="get"
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
                 <div class="form-group" style="margin: 0;">
                     <label class="form-label">Estado</label>
                     <select name="estado" class="form-control select-custom">
@@ -35,22 +44,23 @@
                         <option value="AUSENTE">Ausente</option>
                     </select>
                 </div>
-                
+
                 <div class="form-group" style="margin: 0;">
                     <label class="form-label">Médico</label>
                     <select name="medicoId" class="form-control select-custom">
                         <option value="">Todos los médicos</option>
-                        <option th:each="medico : ${medicos}" th:value="${medico.id}" th:text="${medico.nombre}"></option>
+                        <option th:each="medico : ${medicos}" th:value="${medico.id}" th:text="${medico.nombre}">
+                        </option>
                     </select>
                 </div>
-                
+
                 <div style="display: flex; align-items: flex-end;">
                     <button type="submit" class="btn btn-primary">Filtrar</button>
                     <a th:href="@{/cita/admin}" class="btn btn-secondary" style="margin-left: 0.5rem;">Limpiar</a>
                 </div>
             </form>
         </div>
-        
+
         <!-- Tabla de citas -->
         <div class="table-container">
             <table class="table-custom">
@@ -73,11 +83,11 @@
                             <small th:text="${cita.usuario.correo}"></small>
                         </td>
                         <td th:text="${cita.medico.nombre}"></td>
-                        
+
                         <!-- ✅ CORREGIDO: Usa 'cita.espacio' en lugar de 'cita.espacioCita' -->
                         <td th:text="${#temporals.format(cita.espacio.fecha, 'dd/MM/yyyy')}"></td>
                         <td th:text="${cita.espacio.horaInicio} + ' - ' + ${cita.espacio.horaFin}"></td>
-                        
+
                         <td>
                             <span th:if="${cita.estado == 'PENDIENTE'}" class="badge badge-warning">PENDIENTE</span>
                             <span th:if="${cita.estado == 'CONFIRMADA'}" class="badge badge-success">CONFIRMADA</span>
@@ -87,49 +97,77 @@
                         </td>
                         <td>
                             <a th:if="${cita.estado == 'PENDIENTE' || cita.estado == 'CONFIRMADA'}"
-                               th:href="@{/cita/admin/confirmar/{id}(id=${cita.id})}"
-                               class="btn btn-success btn-sm"
-                               onclick="return confirm('¿Confirmar esta cita?')">
-                                 Confirmar
+                                th:href="@{/cita/admin/confirmar/{id}(id=${cita.id})}" class="btn btn-success btn-sm"
+                                onclick="return confirm('¿Confirmar esta cita?')">
+                                Confirmar
                             </a>
-                            
-                            <button th:if="${cita.estado == 'PENDIENTE' || cita.estado == 'CONFIRMADA'}"
-                                    type="button"
-                                    class="btn btn-warning btn-sm"
-                                    th:onclick="'abrirModalAusente(' + ${cita.id} + ')'">
-                                 Ausente
+                            <button th:if="${cita.estado == 'PENDIENTE' || cita.estado == 'CONFIRMADA' || cita.estado='PRESENTE'}" type="button"
+                                class="btn btn-danger btn-sm" th:onclick="'abrirModalCancelar(' + ${cita.id} + ')'">
+                                Cancelar
                             </button>
-                            
-                            <!-- Modal para Ausente -->
-                            <div th:id="'modalAusente' + ${cita.id}" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
-                                <div class="modal-content" style="background: white; padding: 2rem; border-radius: 8px; max-width: 500px; width: 90%;">
-                                    <h3>Marcar como AUSENTE</h3>
-                                    <form th:action="@{/cita/admin/ausente/{id}(id=${cita.id})}" method="post">
+
+                            <!-- Modal para Cancelar Cita -->
+                            <div th:id="'modalCancelar' + ${cita.id}" class="modal"
+                                style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+                                <div class="modal-content"
+                                    style="background: white; padding: 2rem; border-radius: 8px; max-width: 500px; width: 90%;">
+                                    <h3>Cancelar Cita #<span th:text="${cita.id}"></span></h3>
+                                    <form th:action="@{/cita/admin/cancelar/{id}(id=${cita.id})}" method="post">
                                         <div class="form-group">
-                                            <label class="form-label">Motivo (Opcional)</label>
-                                            <textarea name="motivo" class="form-control" rows="3"></textarea>
+                                            <label class="form-label">Motivo de cancelación (Opcional)</label>
+                                            <textarea name="motivo" class="form-control" rows="3"
+                                                placeholder="Ej: El paciente solicitó cambio de horario"></textarea>
                                         </div>
                                         <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-                                            <button type="button" class="btn btn-secondary" th:onclick="'cerrarModalAusente(' + ${cita.id} + ')'">Cerrar</button>
-                                            <button type="submit" class="btn btn-warning">Confirmar Ausencia</button>
+                                            <button type="button" class="btn btn-secondary"
+                                                th:onclick="'cerrarModalCancelar(' + ${cita.id} + ')'">Cerrar</button>
+                                            <button type="submit" class="btn btn-danger">Confirmar Cancelación</button>
                                         </div>
                                     </form>
                                 </div>
-                            </div>
+                                <button th:if="${cita.estado == 'PENDIENTE' || cita.estado == 'CONFIRMADA'}"
+                                    type="button" class="btn btn-warning btn-sm"
+                                    th:onclick="'abrirModalAusente(' + ${cita.id} + ')'">
+                                    Ausente
+                                </button>
+
+                                <!-- Modal para Ausente -->
+                                <div th:id="'modalAusente' + ${cita.id}" class="modal"
+                                    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+                                    <div class="modal-content"
+                                        style="background: white; padding: 2rem; border-radius: 8px; max-width: 500px; width: 90%;">
+                                        <h3>Marcar como AUSENTE</h3>
+                                        <form th:action="@{/cita/admin/ausente/{id}(id=${cita.id})}" method="post">
+                                            <div class="form-group">
+                                                <label class="form-label">Motivo (Opcional)</label>
+                                                <textarea name="motivo" class="form-control" rows="3"></textarea>
+                                            </div>
+                                            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                                                <button type="button" class="btn btn-secondary"
+                                                    th:onclick="'cerrarModalAusente(' + ${cita.id} + ')'">Cerrar</button>
+                                                <button type="submit" class="btn btn-warning">Confirmar
+                                                    Ausencia</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        
+
         <div th:if="${#lists.isEmpty(citas)}" class="alert alert-info mt-3">
             No se encontraron citas con los filtros seleccionados.
         </div>
     </div>
-    
+
     <script>
         function abrirModalAusente(id) { document.getElementById('modalAusente' + id).style.display = 'flex'; }
         function cerrarModalAusente(id) { document.getElementById('modalAusente' + id).style.display = 'none'; }
+        function abrirModalCancelar(id) { document.getElementById('modalCancelar' + id).style.display = 'flex'; }
+        function cerrarModalCancelar(id) { document.getElementById('modalCancelar' + id).style.display = 'none'; }
     </script>
 </body>
+
 </html>

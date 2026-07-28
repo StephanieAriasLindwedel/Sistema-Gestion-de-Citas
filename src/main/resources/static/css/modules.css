@@ -1,0 +1,47 @@
+/*================================================
+    GRID MÉDICOS
+==================================================*/
+.medicos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; padding: 2rem; }
+.medico-card { background: white; border-radius: var(--radius); box-shadow: var(--shadow-md); padding: 1.5rem; transition: var(--transition); border-left: 4px solid var(--primary-color); }   
+.medico-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.medico-card h3 { color: var(--dark-color); margin-bottom: 0.5rem; font-size: 1.25rem; }
+.medico-card .especialidad { color: var(--primary-color); font-weight: 600; margin-bottom: 1rem; }
+.medico-card .acciones { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+/*================================================
+    GESTIÓN DE CITAS
+==================================================*/
+.citas-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem; }
+.cita-card { background: white; border-radius: var(--radius); box-shadow: var(--shadow-md); padding: 1.5rem; border-left: 4px solid var(--gray-300); transition: var(--transition); }
+.cita-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.cita-card.border-warning { border-left-color: var(--warning-color); }
+.cita-card.border-success { border-left-color: var(--secondary-color); }
+.cita-card.border-danger { border-left-color: var(--danger-color); }
+.cita-card.border-info { border-left-color: var(--info-color); }
+.cita-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--gray-200); }
+.cita-header h3 { margin: 0; font-size: 1.1rem; color: var(--dark-color); }
+.cita-body { margin-bottom: 1rem; }
+.cita-info { margin-bottom: 0.5rem; color: var(--gray-600); font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem; }
+.cita-info strong { color: var(--dark-color); min-width: 90px; }
+.cita-actions { display: flex; gap: 0.75rem; padding-top: 1rem; border-top: 1px solid var(--gray-200); flex-wrap: wrap; }
+/*================================================
+    TABS Y FILTROS
+==================================================*/
+.tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.tabs .btn { background: white; color: var(--gray-600); border: 1px solid var(--gray-200); }
+.tabs .btn:hover { background: var(--gray-100); color: var(--dark-color); }
+.tabs .btn-primary { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+.filters { background: white; padding: 1.5rem; border-radius: var(--radius); box-shadow: var(--shadow-md); margin-bottom: 2rem; }
+.filters form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; align-items: end; }
+/*================================================
+    RESPONSIVE MÓDULOS
+==================================================*/
+@media (max-width: 768px) {
+    .medicos-grid { grid-template-columns: 1fr; }
+    .citas-list { grid-template-columns: 1fr; }
+    .cita-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .filters form { grid-template-columns: 1fr; }
+    .modal-content { width: 95%; padding: 1.5rem; }
+    .table-custom { font-size: 0.875rem; }
+    .table-custom th, .table-custom td { padding: 0.75rem 0.5rem; }
+}

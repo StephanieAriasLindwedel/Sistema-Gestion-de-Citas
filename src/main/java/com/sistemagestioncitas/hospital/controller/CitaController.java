@@ -8,6 +8,7 @@ import com.sistemagestioncitas.hospital.model.Usuario;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -66,6 +67,13 @@ public class CitaController {
         Usuario usuarioActual = obtenerUsuarioActual(principal);
         model.addAttribute("medicos", medicoService.listarTodos());
         model.addAttribute("usuarioId", usuarioActual.getId()); // Para el campo oculto del form
+        if (usuarioActual.getRol().equals("ADMIN")) {
+            List<Usuario> todosLosUsuarios = usuarioService.listarTodos();
+            List<Usuario> pacientes = todosLosUsuarios.stream()
+                    .filter(u -> !"ADMIN".equals(u.getRol()))
+                    .collect(Collectors.toList());
+            model.addAttribute("usuarios", pacientes);
+        }
         return "cita/formularioNuevaCita";
     }
 

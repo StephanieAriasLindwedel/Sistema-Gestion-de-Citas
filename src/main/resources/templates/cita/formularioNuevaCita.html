@@ -3,7 +3,10 @@
     <head>
         <meta charset="UTF-8">
         <title>RESERVAR CITA</title>
-        <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/base.css}">  
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/components.css}">
+    <link rel="stylesheet" th:href="@{/css/modules.css}">
     </head>
     <body>
         <div th:replace="fragments/navbar :: navbar"></div>
@@ -37,7 +40,8 @@
                             </select>
                         </div>
                         <button type="submit" class="btn btn-success">Reservar Cita</button>
-                        <a th:href="@{/cita/mis-citas}" class="btn btn-secondary">Cancelar</a>
+                        <a sec:authorize="hasRole('ADMIN')" th:href="@{/cita/admin}" class="btn btn-secondary">Cancelar</a>
+                        <a sec:authorize="!hasRole('ADMIN')" th:href="@{/cita/mis-citas}" class="btn btn-secondary">Cancelar</a>
                     </form>
                 </div>
             </div>
