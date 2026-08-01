@@ -73,6 +73,7 @@ public class DataLoader implements CommandLineRunner {
             Medico medico = new Medico();
             medico.setNombre("Dr. Roberto Gómez");
             medico.setEspecialidad("Cardiología");
+            medico.setActivo(true);
             medicoRepository.save(medico);
             System.out.println("✅ MÉDICO CREADO: Dr. Roberto Gómez (Cardiología)");
         }

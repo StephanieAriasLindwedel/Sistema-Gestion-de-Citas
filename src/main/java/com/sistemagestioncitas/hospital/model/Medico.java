@@ -21,10 +21,11 @@ public class Medico {
     private Long id;
     private String nombre;
     private String especialidad;
+    private boolean activo = true;
     @OneToMany(mappedBy = "medico", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<EspacioCita> espacios;
-    @OneToMany(mappedBy = "medico", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "medico", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JsonIgnore
     private List<Cita> citas;
 
@@ -50,6 +51,14 @@ public class Medico {
 
     public void setEspecialidad(String especialidad) {
         this.especialidad = especialidad;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 
     public List<EspacioCita> getEspacios() {
