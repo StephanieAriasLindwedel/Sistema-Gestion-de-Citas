@@ -46,7 +46,7 @@ public class EspacioCitaService {
             throw new RuntimeException("No se puede crear un espacio de disponibilidad en una fecha pasada");
         }
         // 2- Si es el dia de hoy, se valida que la hora de inicio no haya pasado
-        if (espacio.getFecha().isBefore(hoy) && espacio.getHoraInicio().isBefore(ahora)) {
+        if (espacio.getFecha().isEqual(hoy) && espacio.getHoraInicio().isBefore(ahora)) {
             throw new RuntimeException(
                     "No se puede crear un espacio para el día de hoy con una hora de inicio que ya pasó");
         }
