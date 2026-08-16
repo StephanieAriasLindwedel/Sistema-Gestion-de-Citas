@@ -151,4 +151,10 @@ public class Cita {
         this.fechaCancelacion = LocalDateTime.now();
     }
 
+    public void marcarComoCompletada() {
+        if (!this.estado.equals("CONFIRMADA") && !this.estado.equals("PRESENTE")) {
+            throw new IllegalStateException("Solo citas confirmadas o presentes pueden marcarse como completadas");
+        }
+        this.estado = "COMPLETADA";
+    }
 }

@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.time.Duration;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +40,7 @@ public class EspacioCitaService {
         return espacioCitaRepository.findById(id);
     }
 
-    public EspacioCita guardar(EspacioCita espacio) {
+    public List<EspacioCita> guardar(EspacioCita espacio) {
         LocalDate hoy = LocalDate.now();
         LocalTime ahora = LocalTime.now();
         // 1- Validad la fecha no sea pasada
@@ -55,7 +57,31 @@ public class EspacioCitaService {
             throw new RuntimeException(
                     "No se puede crear un espacio para el día de hoy con una hora de fin previa a la hora de inicio");
         }
-        return espacioCitaRepository.save(espacio);
+        // Calculo de duracion
+        long duracionMinutos = Duration.between(espacio.getHoraInicio(), espacio.getHoraFin()).toMinutes();
+        List<EspacioCita> espaciosAGuardar = new ArrayList<>();
+        // Lógica de division
+        if (duracionMinutos <= 30) {
+            espacio.setOcupado(false);
+            espaciosAGuardar.add(espacio);
+        } else {
+            LocalTime horaActual = espacio.getHoraInicio();
+            while (horaActual.isBefore(espacio.getHoraFin())) {
+                LocalTime siguienteHora = horaActual.plusMinutes(30);
+                if (siguienteHora.isAfter(espacio.getHoraFin())) {
+                    siguienteHora = espacio.getHoraFin();
+                }
+                EspacioCita nuevoEspacio = new EspacioCita();
+                nuevoEspacio.setMedico(espacio.getMedico());
+                nuevoEspacio.setFecha(espacio.getFecha());
+                nuevoEspacio.setHoraInicio(horaActual);
+                nuevoEspacio.setHoraFin(siguienteHora);
+                nuevoEspacio.setOcupado(false);
+                espaciosAGuardar.add(nuevoEspacio);
+                horaActual = siguienteHora; // Avanzamos al siguiente bloque
+            }
+        }
+        return espacioCitaRepository.saveAll(espaciosAGuardar);
     }
 
     public void ocupar(Long id) {

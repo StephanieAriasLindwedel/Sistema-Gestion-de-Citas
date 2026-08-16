@@ -215,4 +215,26 @@ public class CitaController {
         }
         return "redirect:/cita/admin";
     }
+
+    @GetMapping("/cita/admin/completar/{id}")
+    public String marcarCompletada(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            citaService.marcarComoCompletada(id);
+            redirectAttributes.addFlashAttribute("exito", "Cita marcada como COMPLETADA exitosamente");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al marcar la cita como completada: " + e.getMessage());
+        }
+        return "redirect:/cita/admin";
+    }
+
+    @GetMapping("/cita/admin/presente/{id}")
+    public String marcarPresente(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            citaService.marcarComoPresente(id);
+            redirectAttributes.addFlashAttribute("exito", "Cita marcada como PRESENTE exitosamente");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al marcar la cita como presente: " + e.getMessage());
+        }
+        return "redirect:/cita/admin";
+    }
 }

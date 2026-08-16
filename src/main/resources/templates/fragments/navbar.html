@@ -14,6 +14,9 @@
                     <a sec:authorize="hasRole('ADMIN')" th:href="@{/cita/admin}" class="nav-link">
                         Administrar Citas
                     </a>
+                    <a sec:authorize="hasRole('ADMIN')" th:href="@{/reportes}" class="nav-link">
+                        Reportes
+                    </a>
                     <form th:action="@{/logout}" method="post" style="margin:0;">
                         <button type="submit" class="btn-logout">Cerrar Sesión</button>
                     </form>

@@ -46,7 +46,7 @@ public class SecurityConfig {
                                                                 "/medico/editar/**", "/medico/eliminar/**",
                                                                 "/medico/espacio/**", "/cita/admin/**",
                                                                 "/cita/admin/confirmar/**", "/cita/admin/presente/**",
-                                                                "/cita/admin/ausente/**")
+                                                                "/cita/admin/ausente/**", "/reportes/***")
                                                 .hasRole("ADMIN")
                                                 .anyRequest().authenticated())
                                 .formLogin(form -> form

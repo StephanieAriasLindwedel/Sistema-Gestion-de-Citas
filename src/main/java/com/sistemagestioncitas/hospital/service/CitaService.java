@@ -188,4 +188,17 @@ public class CitaService {
     public Optional<Cita> getCitaById(Long id) {
         return citaRepository.findById(id);
     }
+
+    @Transactional
+    public Cita marcarComoCompletada(Long citaId) {
+        Cita cita = citaRepository.findById(citaId)
+                .orElseThrow(() -> new RuntimeException("Cita no fue encontrada"));
+        // RN3: Solo se puede marcar como completada si está CONFIRMADA o PRESENTE
+        if (!"CONFIRMADA".equals(cita.getEstado()) && !"PRESENTE".equals(cita.getEstado())) {
+            throw new RuntimeException(
+                    "Solo se pueden marcar como completadas citas confirmadas o presentes");
+        }
+        cita.marcarComoCompletada();
+        return citaRepository.save(cita);
+    }
 }

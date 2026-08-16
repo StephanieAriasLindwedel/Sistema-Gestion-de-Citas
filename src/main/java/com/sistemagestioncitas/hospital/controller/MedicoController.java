@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
+import java.util.List;
 import com.sistemagestioncitas.hospital.model.EspacioCita;
 import com.sistemagestioncitas.hospital.model.Medico;
 import com.sistemagestioncitas.hospital.service.EspacioCitaService;
@@ -89,8 +89,10 @@ public class MedicoController {
             Medico medico = medicoService.obtenerPorId(medicoId)
                     .orElseThrow(() -> new RuntimeException("Médico no encontrado"));
             espacio.setMedico(medico);
-            espacioCitaService.guardar(espacio);
-            redirectAttributes.addFlashAttribute("exito", "Espacio creado exitosamente");
+            List<EspacioCita> espaciosCreados = espacioCitaService.guardar(espacio);
+            // Mensaje dinámico según si se dividió o no
+            redirectAttributes.addFlashAttribute("exito",
+                    "Se crearon exitosamente " + espaciosCreados.size() + " espacio(s) de cita disponible(s).");
             return "redirect:/medico/" + medicoId + "/espacios";
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
