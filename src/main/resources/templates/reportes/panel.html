@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Reportes</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/components.css}">
+    <link rel="stylesheet" th:href="@{/css/modules.css}">
+</head>
+
+<body>
+    <div th:replace="fragments/navbar :: navbar"></div>
+<main class="container-custom fade-in">
+        <div class="page-header flex-between">
+            <h1>📊 Panel de Reportes de Citas</h1>
+            <a th:href="@{/cita/admin}" class="btn btn-secondary">← Volver a Admin Citas</a>
+        </div>
+
+        <!-- Formulario de Filtros -->
+        <form th:action="@{/reportes/filtrar}" method="get" class="filters mb-4">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div class="form-group" style="margin:0;">
+                    <label class="form-label">Fecha Inicio</label>
+                    <input type="date" name="fechaInicio" class="form-control" th:value="${fechaInicio}">
+                </div>
+                <div class="form-group" style="margin:0;">
+                    <label class="form-label">Fecha Fin</label>
+                    <input type="date" name="fechaFin" class="form-control" th:value="${fechaFin}">
+                </div>
+                <div class="form-group" style="margin:0;">
+                    <label class="form-label">Médico</label>
+                    <select name="medicoId" class="form-control select-custom">
+                        <option value="">Todos</option>
+                        <option th:each="m : ${medicos}" 
+                                th:value="${m.id}" 
+                                th:text="${m.nombre}"
+                                th:selected="${medicoId != null and medicoId == m.id}"></option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin:0;">
+                    <label class="form-label">Especialidad</label>
+                    <select name="especialidad" class="form-control select-custom">
+                        <option value="">Todas</option>
+                        <option th:each="esp : ${especialidades}" 
+                                th:value="${esp}" 
+                                th:text="${esp}"
+                                th:selected="${especialidad != null and especialidad == esp}"></option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin:0;">
+                    <label class="form-label">Estado</label>
+                    <select name="estado" class="form-control select-custom">
+                        <option value="">Todos</option>
+                        <option th:each="est : ${estados}" 
+                                th:value="${est}" 
+                                th:text="${est}"
+                                th:selected="${estado != null and estado == est}"></option>
+                    </select>
+                </div>
+                <div style="display:flex; align-items:flex-end; gap:0.5rem;">
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                    <a th:href="@{/reportes}" class="btn btn-secondary">Limpiar</a>
+                </div>
+            </div>
+        </form>
+
+        <!-- Resúmenes Estadísticos -->
+        <div th:if="${citas != null}" class="stats-grid mb-4">
+            <div class="stat-card">
+                <h3>Total Citas Filtradas</h3>
+                <p th:text="${totalCitas}">0</p>
+            </div>
+            <div class="stat-card warning" th:each="entry : ${resumenPorEstado}">
+                <h3 th:text="${entry.key}">ESTADO</h3>
+                <p th:text="${entry.value}">0</p>
+            </div>
+        </div>
+
+        <!-- Botón Exportar -->
+        <div th:if="${citas != null and !#lists.isEmpty(citas)}" class="flex-between mb-3">
+            <span class="alert alert-info" style="margin:0;">
+                Mostrando <strong th:text="${totalCitas}">0</strong> registros
+            </span>
+            <a th:href="@{/reportes/exportar-csv(fechaInicio=${fechaInicio}, fechaFin=${fechaFin}, medicoId=${medicoId}, especialidad=${especialidad}, estado=${estado})}" 
+               class="btn btn-success">📥 Descargar CSV</a>
+        </div>
+
+        <!-- Tabla de Resultados -->
+        <div th:if="${citas != null}" class="table-container">
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Paciente</th>
+                        <th>Médico</th>
+                        <th>Especialidad</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="cita : ${citas}">
+                        <td th:text="${cita.id}"></td>
+                        <td th:text="${cita.usuario.nombre}"></td>
+                        <td th:text="${cita.medico.nombre}"></td>
+                        <td th:text="${cita.medico.especialidad}"></td>
+                        <td th:text="${#temporals.format(cita.espacio.fecha, 'dd/MM/yyyy')}"></td>
+                        <td th:text="${cita.espacio.horaInicio} + ' - ' + ${cita.espacio.horaFin}"></td>
+                        <td>
+                            <span th:if="${cita.estado == 'PENDIENTE'}" class="badge badge-warning">PENDIENTE</span>
+                            <span th:if="${cita.estado == 'CONFIRMADA'}" class="badge badge-success">CONFIRMADA</span>
+                            <span th:if="${cita.estado == 'CANCELADA'}" class="badge badge-danger">CANCELADA</span>
+                            <span th:if="${cita.estado == 'PRESENTE'}" class="badge badge-info">PRESENTE</span>
+                            <span th:if="${cita.estado == 'AUSENTE'}" class="badge badge-danger">AUSENTE</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div th:if="${citas == null or #lists.isEmpty(citas)}" class="empty-state mt-4">
+            <div class="empty-state-icon">📋</div>
+            <p>No se encontraron citas con los filtros seleccionados.</p>
+        </div>
+    </main>
+</body>
+</html>

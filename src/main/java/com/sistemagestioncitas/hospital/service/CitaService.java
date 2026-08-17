@@ -3,7 +3,9 @@ package com.sistemagestioncitas.hospital.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
+import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -200,5 +202,79 @@ public class CitaService {
         }
         cita.marcarComoCompletada();
         return citaRepository.save(cita);
+    }
+
+    /**
+     * /**
+     * Filtra citas según múltiples criterios combinables
+     * Implementa lógica de filtrado dinámico sin consultas JPQL complejas
+     */
+    public List<Cita> filtrarCitas(LocalDate fechaInicio, LocalDate fechaFin,
+            Long medicoId, String especialidad, String estado) {
+        List<Cita> todas = citaRepository.findAll();
+
+        return todas.stream()
+                .filter(c -> fechaInicio == null || !c.getEspacio().getFecha().isBefore(fechaInicio))
+                .filter(c -> fechaFin == null || !c.getEspacio().getFecha().isAfter(fechaFin))
+                .filter(c -> medicoId == null || c.getMedico().getId().equals(medicoId))
+                .filter(c -> especialidad == null || especialidad.isEmpty() ||
+                        c.getMedico().getEspecialidad().equalsIgnoreCase(especialidad))
+                .filter(c -> estado == null || estado.isEmpty() || c.getEstado().equals(estado))
+                .sorted(Comparator.comparing((Cita c) -> c.getEspacio().getFecha())
+                        .thenComparing((Cita c) -> c.getEspacio().getHoraInicio()))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Genera contenido CSV fiel a los datos filtrados mostrados en pantalla.
+     */
+    public String generarCSV(List<Cita> citas) {
+        StringBuilder sb = new StringBuilder();
+
+        // 1. Agregar BOM UTF-8 para que Excel reconozca caracteres especiales (ñ,
+        // acentos, etc.)
+        sb.append("\uFEFF");
+
+        // 2. Encabezado con metadatos
+        sb.append("\"Reporte de Citas Hospitalarias\"\n");
+        sb.append("\"Fecha de generación: ").append(java.time.LocalDateTime.now().format(
+                java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))).append("\"\n");
+        sb.append("\"Total de registros: ").append(citas.size()).append("\"\n");
+        sb.append("\n"); // Línea en blanco separadora
+
+        // 3. Encabezados de columnas
+        sb.append(
+                "\"ID\",\"Paciente\",\"Cédula\",\"Médico\",\"Especialidad\",\"Fecha\",\"Hora Inicio\",\"Hora Fin\",\"Estado\",\"Fecha de Creación\"\n");
+
+        // 4. Datos de cada cita
+        for (Cita c : citas) {
+            sb.append(String.format("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n",
+                    escapeCSV(String.valueOf(c.getId())),
+                    escapeCSV(c.getUsuario().getNombre()),
+                    escapeCSV(c.getUsuario().getCedula()),
+                    escapeCSV(c.getMedico().getNombre()),
+                    escapeCSV(c.getMedico().getEspecialidad()),
+                    escapeCSV(c.getEspacio().getFecha().toString()),
+                    escapeCSV(c.getEspacio().getHoraInicio().toString()),
+                    escapeCSV(c.getEspacio().getHoraFin().toString()),
+                    escapeCSV(c.getEstado()),
+                    escapeCSV(c.getFechaCreacion() != null ? c.getFechaCreacion()
+                            .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) : "")));
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Escapa caracteres especiales para CSV:
+     * - Duplica comillas dobles internas
+     * - Maneja saltos de línea y comas dentro del texto
+     */
+    private String escapeCSV(String value) {
+        if (value == null) {
+            return "";
+        }
+        // Reemplazar comillas dobles por dos comillas dobles
+        return value.replace("\"", "\"\"");
     }
 }
